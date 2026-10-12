@@ -29,8 +29,8 @@ elenco-documenti/
 
 1. Carica `index.html` e `get_documents.php` nella stessa cartella del server, per esempio `/documenti/`.
 2. Crea nella stessa cartella le sottocartelle che vuoi mostrare, per esempio `modulistica/`, `circolari/`, `progetti/`.
-3. Inserisci i file nelle cartelle corrispondenti.
-4. Apri `https://tuosito.it/documenti/` nel browser per verificare che l'elenco venga visualizzato.
+3. Inserisci i file nelle cartelle corrispondenti..
+5. Apri `https://tuosito.it/documenti/` nel browser per verificare che l'elenco venga visualizzato.
 
 Non serve nessuna configurazione: lo script legge direttamente le cartelle.
 
@@ -38,9 +38,9 @@ Non serve nessuna configurazione: lo script legge direttamente le cartelle.
 
 Basta copiare il file nella cartella giusta. Non è necessario modificare il codice. Il file compare nell'elenco al successivo caricamento della pagina.
 
-## Inserimento in un'altra pagina
+## Inserimento in un'altra pagina del sito web
 
-Per mostrare l'elenco dentro una pagina esistente, usa un `iframe`:
+Per mostrare l'elenco dentro una pagina esistente, apri in modalità codice html e usa un `iframe`:
 
 ```html
 <iframe src="https://tuosito.it/documenti/"
@@ -50,7 +50,7 @@ Per mostrare l'elenco dentro una pagina esistente, usa un `iframe`:
 </iframe>
 ```
 
-Regola `height` in base alla quantità di contenuto.
+Regola `height` in base alla quantità di contenuto e ovviamente il campo src che punti alla cartella del server.
 
 ## Personalizzazione
 
