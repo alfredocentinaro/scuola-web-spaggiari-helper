@@ -8,7 +8,7 @@ Il progetto nasce dall'esperienza diretta di un animatore digitale, con l'obiett
 
 | Strumento | Descrizione |
 |-----------|-------------|
-| [elenco-documenti](./elenco-documenti/) | Pagina che mostra in elenco i documenti (PDF, Word, Excel) presenti sul server, organizzati per cartella, con ricerca e download |
+| [elenco-documenti](./elenco-documenti/) | Pagina che mostra in elenco i documenti (PDF, Word, Excel) presenti sul server, organizzati per cartella, con ricerca e download. I file possono essere caricati i nuna cartella via FTP o Wordpress e visualizzati in una pagina pubblica o riservata. |
 
 *Altri strumenti verranno aggiunti nel tempo.*
 
