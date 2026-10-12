@@ -1,4 +1,3 @@
-# scuola-web-spaggiari-helper
 # Strumenti per i siti web scolastici
 
 Raccolta di script e strumenti sviluppati per migliorare la grafica e la gestione dei siti web istituzionali delle scuole, con particolare attenzione ai siti che utilizzano il frontend di Spaggiari.
