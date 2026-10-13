@@ -19,6 +19,7 @@ Pagina web leggera che mostra in elenco i documenti (PDF, Word, Excel) presenti 
 - Accesso al server via FTP, SFTP o pannello di controllo
 
 ## Struttura del progetto
+```text
 elenco-documenti/
 ├── index.html # Interfaccia della pagina
 ├── get_documents.php # Script che legge i file e restituisce i dati in JSON
