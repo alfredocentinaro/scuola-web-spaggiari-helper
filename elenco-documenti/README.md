@@ -43,14 +43,18 @@ Basta copiare il file nella cartella giusta. Non è necessario modificare il cod
 Per mostrare l'elenco dentro una pagina esistente, apri in modalità codice html e usa un `iframe`:
 
 ```html
-<iframe src="https://tuosito.it/documenti/"
-        width="100%" height="600px"
-        style="border: none; display: block;"
-        title="Elenco documenti">
+<iframe width="100%"
+        height="600px"
+        style="border: none; display: block; clear: both;"
+        src="https://www.esempio.edu.it/cartelladocumenti/"
+        allowfullscreen="allowfullscreen"
+        sandbox="allow-scripts allow-same-origin allow-downloads">
 </iframe>
+
 ```
 
 Regola `height` in base alla quantità di contenuto e ovviamente il campo src che punti alla cartella del server.
+L'attributo sandbox  è consigliato per evitare lo spiacevole errore di cookies
 
 ## Personalizzazione
 
