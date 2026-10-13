@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elenco Documenti</title>
+  <!-- Icone Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    :root {
+      --blu-italia: #0066cc;
+      --blu-scuro: #004a99;
+      --grigio-sfondo: #f8f9fa;
+      --grigio-bordo: #e9ecef;
+      --testo: #212529;
+      --evidenziatore-nuovo: #fff9e6;
+      --badge-nuovo: #d9381e;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 10px;
+      font-family: 'Titillium Web', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: transparent;
+      color: var(--testo);
+    }
+
+    /* Barra ricerca */
+    .tb-header {
+      margin-bottom: 20px;
+    }
+
+    .ricerca-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .ricerca-input:focus { border-color: var(--blu-italia); }
+
+    /* Sezione Cartella/Tabella */
+    .sezione-cartella {
+      margin-bottom: 25px;
+    }
+
+    .titolo-cartella {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--blu-scuro);
+      border-bottom: 2px solid var(--blu-italia);
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Tabella Compatta */
+    .table-container {
+      overflow-x: auto;
+      background: #ffffff;
+      border: 1px solid var(--grigio-bordo);
+      border-radius: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    thead {
+      background-color: var(--grigio-sfondo);
+      border-bottom: 2px solid var(--grigio-bordo);
+    }
+
+    th {
+      padding: 8px 12px;
+      font-weight: 600;
+      color: #495057;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--grigio-bordo);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover { background-color: #f1f5f9 !important; }
+
+    /* Evidenziazione file recenti (<= 3 giorni) */
+    tbody tr.riga-recente { background-color: var(--evidenziatore-nuovo); }
+
+    .badge-nuovo {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background-color: var(--badge-nuovo);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 6px;
+      text-transform: uppercase;
+    }
+
+    /* Icone */
+    .icona-doc { font-size: 18px; margin-right: 6px; vertical-align: middle; }
+    .icona-pdf { color: #d9381e; }
+    .icona-word { color: #2b579a; }
+    .icona-excel { color: #217346; }
+
+    .nome-file { font-weight: 500; color: #1a1a1a; word-break: break-all; }
+
+    /* Pulsante Scarica */
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background-color: var(--blu-italia);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .btn-download:hover { background-color: var(--blu-scuro); }
+
+    .col-data, .col-dim, .col-azione { white-space: nowrap; }
+    .nessun-dato { text-align: center; padding: 20px; color: #6c757d; }
+  </style>
+</head>
+<body>
+
+  <div class="tb-header">
+    <input type="text" id="input-ricerca" class="ricerca-input" placeholder="🔍 Cerca in tutte le cartelle..." onkeyup="filtraDocumenti()">
+  </div>
+
+  <div id="contenitore-sezioni"></div>
+
+<script>
+const urlCartella = "./";
+let strutturaDati = [];
+
+const TRE_GIORNI_IN_SECONDI = 3 * 24 * 60 * 60;
+const timestampAttuale = Math.floor(Date.now() / 1000);
+
+fetch(urlCartella + "get_documents.php")
+  .then(res => res.json())
+  .then(data => {
+    strutturaDati = data;
+    mostraSezioni(strutturaDati);
+  })
+  .catch(() => {
+    document.getElementById('contenitore-sezioni').innerHTML = '<div class="nessun-dato">Errore nel caricamento file.</div>';
+  });
+
+function mostraSezioni(sezioni) {
+  const contenitore = document.getElementById('contenitore-sezioni');
+  contenitore.innerHTML = "";
+
+  let fileTrovatiTotali = 0;
+
+  sezioni.forEach(sezione => {
+    if (sezione.file.length === 0) return;
+    fileTrovatiTotali += sezione.file.length;
+
+    const divSezione = document.createElement('div');
+    divSezione.className = 'sezione-cartella';
+
+    let righeHtml = '';
+
+    sezione.file.forEach(doc => {
+      const eRecente = (timestampAttuale - doc.timestamp) <= TRE_GIORNI_IN_SECONDI;
+      const classeRilevamento = eRecente ? 'riga-recente' : '';
+      const badgeHtml = eRecente ? `<span class="badge-nuovo"><i class="bi bi-fire"></i> Nuovo</span>` : '';
+
+      let classeIcona = 'bi-file-earmark-text';
+      let coloreIcona = '';
+
+      if (doc.estensione === 'pdf') {
+        classeIcona = 'bi-file-earmark-pdf-fill';
+        coloreIcona = 'icona-pdf';
+      } else if (['doc', 'docx'].includes(doc.estensione)) {
+        classeIcona = 'bi-file-earmark-word-fill';
+        coloreIcona = 'icona-word';
+      } else if (['xls', 'xlsx'].includes(doc.estensione)) {
+        classeIcona = 'bi-file-earmark-excel-fill';
+        coloreIcona = 'icona-excel';
+      }
+
+      righeHtml += `
+        <tr class="${classeRilevamento}">
+          <td>
+            <i class="bi ${classeIcona} icona-doc ${coloreIcona}"></i>
+            <span class="nome-file">${doc.nome}</span>
+            ${badgeHtml}
+          </td>
+          <td class="col-data">${doc.data}</td>
+          <td class="col-dim">${doc.dimensione}</td>
+          <td class="col-azione" style="text-align: right;">
+            <a href="${urlCartella + doc.percorso}" class="btn-download" download>
+              <i class="bi bi-download"></i> Scarica
+            </a>
+          </td>
+        </tr>
+      `;
+    });
+
+    divSezione.innerHTML = `
+      <div class="titolo-cartella">
+        <i class="bi bi-folder-fill"></i> ${sezione.titolo}
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Documento</th>
+              <th class="col-data">Data</th>
+              <th class="col-dim">Dimensione</th>
+              <th class="col-azione" style="text-align: right;">Azione</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${righeHtml}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    contenitore.appendChild(divSezione);
+  });
+
+  if (fileTrovatiTotali === 0) {
+    contenitore.innerHTML = '<div class="nessun-dato">Nessun documento trovato.</div>';
+  }
+}
+
+function filtraDocumenti() {
+  const testo = document.getElementById('input-ricerca').value.toLowerCase();
+  
+  if (!testo) {
+    mostraSezioni(strutturaDati);
+    return;
+  }
+
+  const datiFiltrati = strutturaDati.map(sezione => {
+    return {
+      titolo: sezione.titolo,
+      file: sezione.file.filter(doc => 
+        doc.nome.toLowerCase().includes(testo) || 
+        sezione.titolo.toLowerCase().includes(testo)
+      )
+    };
+  });
+
+  mostraSezioni(datiFiltrati);
+}
+</script>
+
+</body>
+</html>
