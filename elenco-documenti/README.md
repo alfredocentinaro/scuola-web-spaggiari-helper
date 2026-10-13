@@ -24,7 +24,7 @@ elenco-documenti/
 ├── index.html # Interfaccia della pagina
 ├── get_documents.php # Script che legge i file e restituisce i dati in JSON
 └── esempio-iframe.html # Esempio di come inserire la pagina in un altro sito
-
+'''
 
 ## Installazione
 
